@@ -1,23 +1,11 @@
 import React, { useMemo } from 'react';
 import * as THREE from 'three';
-import { ThreeElements } from '@react-three/fiber';
 import { OrbitControls, Environment, PerspectiveCamera, Stars as SkyStars } from '@react-three/drei';
 import { EffectComposer, Bloom, Vignette, Noise } from '@react-three/postprocessing';
-import { KernelSize, Resolution } from 'postprocessing';
 import { generateParticles } from '../utils/generator';
 import InstancedGroup from './InstancedGroup';
 import TopperStar from './TopperStar';
-
-declare global {
-  namespace JSX {
-    interface IntrinsicElements {
-      ambientLight: ThreeElements['ambientLight'];
-      spotLight: ThreeElements['spotLight'];
-      pointLight: ThreeElements['pointLight'];
-      group: ThreeElements['group'];
-    }
-  }
-}
+import Snow from './Snow';
 
 interface SceneProps {
   isTreeMode: boolean;
@@ -124,6 +112,9 @@ const Scene: React.FC<SceneProps> = ({ isTreeMode }) => {
 
       {/* Background Stars (Far away) */}
       <SkyStars radius={100} depth={50} count={5000} factor={4} saturation={0} fade speed={1} />
+
+      {/* Ambient Snowfall */}
+      <Snow />
 
       {/* --- POST PROCESSING --- */}
       <EffectComposer disableNormalPass>

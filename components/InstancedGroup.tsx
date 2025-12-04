@@ -1,15 +1,7 @@
 import React, { useRef, useMemo, useLayoutEffect } from 'react';
 import * as THREE from 'three';
-import { useFrame, ThreeElements } from '@react-three/fiber';
+import { useFrame } from '@react-three/fiber';
 import { ParticleData } from '../types';
-
-declare global {
-  namespace JSX {
-    interface IntrinsicElements {
-      instancedMesh: ThreeElements['instancedMesh'];
-    }
-  }
-}
 
 interface InstancedGroupProps {
   data: ParticleData[];
