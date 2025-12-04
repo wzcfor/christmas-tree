@@ -1,7 +1,20 @@
 import React, { useRef } from 'react';
 import * as THREE from 'three';
-import { useFrame } from '@react-three/fiber';
+import { useFrame, ThreeElements } from '@react-three/fiber';
 import { Float } from '@react-three/drei';
+
+declare global {
+  namespace JSX {
+    interface IntrinsicElements {
+      group: ThreeElements['group'];
+      mesh: ThreeElements['mesh'];
+      octahedronGeometry: ThreeElements['octahedronGeometry'];
+      meshStandardMaterial: ThreeElements['meshStandardMaterial'];
+      meshBasicMaterial: ThreeElements['meshBasicMaterial'];
+      pointLight: ThreeElements['pointLight'];
+    }
+  }
+}
 
 interface TopperStarProps {
   isTreeMode: boolean;

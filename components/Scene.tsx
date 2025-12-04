@@ -1,11 +1,23 @@
 import React, { useMemo } from 'react';
 import * as THREE from 'three';
+import { ThreeElements } from '@react-three/fiber';
 import { OrbitControls, Environment, PerspectiveCamera, Stars as SkyStars } from '@react-three/drei';
 import { EffectComposer, Bloom, Vignette, Noise } from '@react-three/postprocessing';
 import { KernelSize, Resolution } from 'postprocessing';
 import { generateParticles } from '../utils/generator';
 import InstancedGroup from './InstancedGroup';
 import TopperStar from './TopperStar';
+
+declare global {
+  namespace JSX {
+    interface IntrinsicElements {
+      ambientLight: ThreeElements['ambientLight'];
+      spotLight: ThreeElements['spotLight'];
+      pointLight: ThreeElements['pointLight'];
+      group: ThreeElements['group'];
+    }
+  }
+}
 
 interface SceneProps {
   isTreeMode: boolean;
