@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, Suspense } from 'react';
 import * as THREE from 'three';
 import { OrbitControls, Environment, PerspectiveCamera, Stars as SkyStars } from '@react-three/drei';
 import { EffectComposer, Bloom, Vignette, Noise } from '@react-three/postprocessing';
@@ -6,6 +6,7 @@ import { generateParticles } from '../utils/generator';
 import InstancedGroup from './InstancedGroup';
 import TopperStar from './TopperStar';
 import Snow from './Snow';
+import PhotoOrnaments from './PhotoOrnaments';
 
 interface SceneProps {
   isTreeMode: boolean;
@@ -107,6 +108,11 @@ const Scene: React.FC<SceneProps> = ({ isTreeMode }) => {
           speed={0.9} // Fast and sparkly
         />
         
+        {/* The Photo Frame Gallery */}
+        <Suspense fallback={null}>
+          <PhotoOrnaments isTreeMode={isTreeMode} />
+        </Suspense>
+
         <TopperStar isTreeMode={isTreeMode} />
       </group>
 
@@ -117,7 +123,7 @@ const Scene: React.FC<SceneProps> = ({ isTreeMode }) => {
       <Snow />
 
       {/* --- POST PROCESSING --- */}
-      <EffectComposer disableNormalPass>
+      <EffectComposer enableNormalPass={false}>
         {/* Bloom for the magical glow */}
         <Bloom 
           luminanceThreshold={1.1} // Only very bright things (emissive > 1) glow

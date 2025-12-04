@@ -70,3 +70,56 @@ export const generateParticles = (count: number, type: 'cone' | 'sphere'): Parti
 
   return data;
 };
+
+/**
+ * Specific generator for Photo Frames.
+ * Places them slightly further out than needles and ensures they face outward.
+ */
+export const generatePhotoPositions = (count: number): ParticleData[] => {
+  const data: ParticleData[] = [];
+  // Use a different prime step to avoid aligning perfectly with needles
+  const goldenAngle = Math.PI * (3 - Math.sqrt(5)) + 0.5; 
+
+  for (let i = 0; i < count; i++) {
+    const t = i / count;
+    
+    // Distribute mostly in the middle/bottom of the tree (0.1 to 0.8 range)
+    // to avoid tiny frames at the very top
+    const effectiveT = 0.1 + (t * 0.7); 
+
+    const y = effectiveT * TREE_HEIGHT - TREE_HEIGHT / 2;
+    
+    // Slightly larger radius to sit ON TOP of the needles
+    const radius = (1 - effectiveT) * BASE_RADIUS + 0.8; 
+    
+    const theta = i * goldenAngle * 5; // *5 to spread them out more around the circumference
+
+    const xTree = Math.cos(theta) * radius;
+    const zTree = Math.sin(theta) * radius;
+    
+    // Calculate rotation to face OUTWARDS from center (0,y,0)
+    // Math.atan2(x, z) gives the angle. 
+    const lookAtAngle = Math.atan2(xTree, zTree);
+    const rot = new THREE.Euler(0, lookAtAngle, 0);
+
+    // Scatter logic
+    const u = Math.random();
+    const v = Math.random();
+    const thetaScatter = 2 * Math.PI * u;
+    const phiScatter = Math.acos(2 * v - 1);
+    const rScatter = Math.cbrt(Math.random()) * SCATTER_RADIUS;
+
+    data.push({
+      id: i,
+      treePos: new THREE.Vector3(xTree, y, zTree),
+      scatterPos: new THREE.Vector3(
+        rScatter * Math.sin(phiScatter) * Math.cos(thetaScatter),
+        rScatter * Math.sin(phiScatter) * Math.sin(thetaScatter),
+        rScatter * Math.cos(phiScatter)
+      ),
+      rotation: rot,
+      scale: 1,
+    });
+  }
+  return data;
+};

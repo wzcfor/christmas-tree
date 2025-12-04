@@ -11,13 +11,29 @@ const TopperStar: React.FC<TopperStarProps> = ({ isTreeMode }) => {
   const meshRef = useRef<THREE.Group>(null);
   
   // Tree Top Position
-  const treeTop = new THREE.Vector3(0, 7.5, 0); // slightly above TREE_HEIGHT/2
+  const treeTopBase = new THREE.Vector3(0, 7.5, 0); // slightly above TREE_HEIGHT/2
   // Scatter Position (somewhere far)
   const scatterPos = new THREE.Vector3(0, 20, -10);
 
   useFrame((state, delta) => {
     if (!meshRef.current) return;
-    const target = isTreeMode ? treeTop : scatterPos;
+    
+    let target = isTreeMode ? treeTopBase.clone() : scatterPos.clone();
+    
+    if (isTreeMode) {
+        // Match the wind logic of the top-most tree particles
+        // y is ~7.5.
+        const time = state.clock.elapsedTime;
+        const yNorm = (7.5 + 7) / 14; // ~1.0
+        const windStrength = Math.pow(yNorm, 2) * 0.5; 
+
+        const windX = Math.sin(time * 0.8 + 7.5 * 0.3) * windStrength;
+        const windZ = Math.cos(time * 0.6 + 7.5 * 0.2) * windStrength * 0.5;
+        
+        target.x += windX;
+        target.z += windZ;
+    }
+
     meshRef.current.position.lerp(target, 0.05);
     
     // Spin slowly
